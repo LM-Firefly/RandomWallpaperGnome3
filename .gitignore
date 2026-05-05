@@ -9,3 +9,12 @@ randomwallpaper@iflow.space.shell-extension.zip
 
 # Build stuff
 node_modules/
+bin/
+pkg/
+
+# Windows port (Tauri) — heavy build artifacts
+windows/dist/
+windows/.vite/
+windows/src-tauri/target/
+windows/src-tauri/gen/schemas/
+windows/npm-install.log

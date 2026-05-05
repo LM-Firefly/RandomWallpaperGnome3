@@ -1,0 +1,17 @@
+# GNU toolchain config — tells cargo to use the MSYS2 MinGW-w64 linker
+# when building with the *-pc-windows-gnu target. Safe to keep even when
+# building MSVC: this section only applies to the gnu target triple.
+
+[target.x86_64-pc-windows-gnu]
+linker = "C:/msys64/mingw64/bin/gcc.exe"
+ar = "C:/msys64/mingw64/bin/ar.exe"
+# Default BFD ld is fine now that the lib's `cdylib` crate-type was removed
+# (no more PE export-table overflow). To switch to LLD for faster linking,
+# install `mingw-w64-x86_64-lld` and add:
+#   rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+#
+# NOTE: build scripts (e.g. tauri-winres) shell out to `windres`, `gcc`,
+# `dlltool`, etc. by name, so `C:\msys64\mingw64\bin` MUST be on PATH when
+# you run cargo / `pnpm run tauri:dev`. Either add it to the user PATH
+# permanently, or run for the current session:
+#   $env:PATH = "C:\msys64\mingw64\bin;" + $env:PATH

@@ -1,0 +1,54 @@
+{
+    "$schema": "../gen/schemas/desktop-schema.json",
+    "identifier": "default",
+    "description": "Default capability for the main window",
+    "windows": ["main"],
+    "permissions": [
+        "core:default",
+        "core:window:allow-show",
+        "core:window:allow-hide",
+        "core:window:allow-close",
+        "core:window:allow-set-focus",
+        "core:window:allow-minimize",
+        "core:webview:allow-create-webview-window",
+        "core:event:default",
+        "core:path:default",
+        "core:app:default",
+        "store:default",
+        "fs:default",
+        "fs:allow-read-file",
+        "fs:allow-write-file",
+        "fs:allow-mkdir",
+        "fs:allow-remove",
+        "fs:allow-rename",
+        "fs:allow-copy-file",
+        "fs:allow-exists",
+        "fs:allow-read-dir",
+        "fs:allow-stat",
+        {
+            "identifier": "fs:scope",
+            "allow": [
+                { "path": "$APPDATA/**" },
+                { "path": "$APPCACHE/**" },
+                { "path": "$APPLOCALDATA/**" },
+                { "path": "$PICTURE/**" },
+                { "path": "$DOWNLOAD/**" },
+                { "path": "$HOME/**" }
+            ]
+        },
+        "shell:default",
+        {
+            "identifier": "http:default",
+            "allow": [
+                { "url": "https://**" },
+                { "url": "http://**" }
+            ]
+        },
+        "dialog:default",
+        "notification:default",
+        "autostart:default",
+        "autostart:allow-enable",
+        "autostart:allow-disable",
+        "autostart:allow-is-enabled"
+    ]
+}

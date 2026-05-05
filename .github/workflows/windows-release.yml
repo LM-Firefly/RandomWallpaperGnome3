@@ -1,0 +1,88 @@
+name: Windows release (Tauri)
+run-name: Build Windows installers and publish prerelease
+
+on:
+    push:
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: 'Tag to publish (e.g. windows-v0.1.0). Leave blank to use current ref.'
+                required: false
+                default: ''
+            prerelease:
+                description: 'Mark the release as prerelease'
+                required: false
+                default: 'true'
+
+defaults:
+    run:
+        working-directory: windows
+
+jobs:
+    build:
+        name: Build (windows-latest)
+        runs-on: windows-latest
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9
+                  run_install: false
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 25
+
+            - name: Set up Rust (stable, MSVC)
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  toolchain: stable
+                  targets: x86_64-pc-windows-msvc
+
+            - name: Cache cargo registry & target
+              uses: Swatinem/rust-cache@v2
+              with:
+                  workspaces: windows/src-tauri
+
+            - name: Install npm dependencies
+              run: pnpm install --no-frozen-lockfile
+
+            - name: Type-check
+              run: pnpm exec tsc --noEmit
+
+            - name: Build Tauri (NSIS + MSI)
+              run: pnpm exec tauri build --target x86_64-pc-windows-msvc
+
+            - name: Collect artifacts
+              shell: pwsh
+              run: |
+                  $dest = "$env:GITHUB_WORKSPACE/windows-artifacts"
+                  New-Item -ItemType Directory -Force -Path $dest | Out-Null
+                  $bundle = "src-tauri/target/x86_64-pc-windows-msvc/release/bundle"
+                  Get-ChildItem -Path $bundle -Recurse -Include *.exe,*.msi,*.exe.sig,*.msi.sig |
+                      ForEach-Object { Copy-Item $_.FullName -Destination $dest -Force }
+                  Get-ChildItem $dest
+
+            - name: Upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: windows-installers
+                  path: windows-artifacts/*
+                  if-no-files-found: error
+
+            - name: Publish GitHub prerelease
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: prerelease
+                  name: Windows Prerelease
+                  prerelease: true
+                  generate_release_notes: true
+                  files: windows-artifacts/*
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

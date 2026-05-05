@@ -1,0 +1,30 @@
+{
+    "name": "random-wallpaper",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "Random Wallpaper for Windows — port of RandomWallpaperGnome3",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc --noEmit && vite build",
+        "preview": "vite preview",
+        "tauri": "tauri",
+        "tauri:dev": "tauri dev",
+        "tauri:build": "tauri build"
+    },
+    "dependencies": {
+        "@tauri-apps/api": "^2.11.0",
+        "@tauri-apps/plugin-autostart": "^2.5.1",
+        "@tauri-apps/plugin-dialog": "^2.7.1",
+        "@tauri-apps/plugin-fs": "^2.5.1",
+        "@tauri-apps/plugin-http": "^2.5.9",
+        "@tauri-apps/plugin-notification": "^2.3.3",
+        "@tauri-apps/plugin-shell": "^2.3.5",
+        "@tauri-apps/plugin-store": "^2.4.3"
+    },
+    "devDependencies": {
+        "@tauri-apps/cli": "^2.11.0",
+        "typescript": "^5.9.3",
+        "vite": "^5.4.21"
+    }
+}
